@@ -9,7 +9,8 @@ namespace KomivoyazherFireMethod
 {
     public class KomiParamsReader : IKomiParams
     {
-        private double temperature;
+        private double startTemperature;
+        private double endTemperature;
         private double coolingRate;
 
         public KomiParamsReader(string file) 
@@ -21,13 +22,24 @@ namespace KomivoyazherFireMethod
 
                 while ((line = sr.ReadLine()) != null)
                 {
-                    if (line.Contains("temperature="))
+                    if (line.Contains("startTemperature="))
                     {
-                        if (!double.TryParse(line.Split('=')[1], out temperature))
+                        if (!double.TryParse(line.Split('=')[1], out startTemperature))
                         {
                             Console.WriteLine(line);
-                            Console.WriteLine(nameof(temperature) + ": " + temperature);
-                            Console.WriteLine(nameof(temperature) + " не прочитан");
+                            Console.WriteLine(nameof(startTemperature) + ": " + startTemperature);
+                            Console.WriteLine(nameof(startTemperature) + " не прочитан");
+                        }
+                        continue;
+                    }
+
+                    if (line.Contains("endTemperature="))
+                    {
+                        if (!double.TryParse(line.Split('=')[1], out endTemperature))
+                        {
+                            Console.WriteLine(line);
+                            Console.WriteLine(nameof(endTemperature) + ": " + endTemperature);
+                            Console.WriteLine(nameof(endTemperature) + " не прочитан");
                         }
                         continue;
                     }
@@ -56,9 +68,14 @@ namespace KomivoyazherFireMethod
             return coolingRate;
         }
 
-        public double getTemperature()
+        public double getStartTemperature()
         {
-            return temperature;
+            return startTemperature;
+        }
+
+        public double getEndTemperature()
+        {
+            return endTemperature;
         }
     }
 }

@@ -10,17 +10,17 @@ namespace KomivoyazherFireMethod
     {
         private Random random = new Random();
 
-        // Пример матрицы расстояний между городами
         private double[,] distanceMatrix;
 
-        // Создание списка городов (индексы)
         List<int> cities = new List<int>();
 
-        // Начальная температура и коэффициент охлаждения
-        private double temperature;
+        private double currentTemperature;
+        private double endTemperature;
         private double coolingRate;
 
-        public KomivoyazherClient(double[,] distanceMatrix, double temperature = 10000, double coolingRate = 0.003) 
+        private int limitIterations = 5000;
+
+        public KomivoyazherClient(double[,] distanceMatrix, double startTemperature = 10000, double endTemperature = 1, double coolingRate = 0.003) 
         {
             this.distanceMatrix = distanceMatrix;
 
@@ -30,7 +30,8 @@ namespace KomivoyazherFireMethod
                 cities.Add(i);
             }
 
-            this.temperature = temperature;
+            this.currentTemperature = startTemperature;
+            this.endTemperature = endTemperature;
             this.coolingRate = coolingRate;
         }
 
@@ -39,7 +40,9 @@ namespace KomivoyazherFireMethod
             Solution currentSolution = new Solution(cities, distanceMatrix, random);
             Solution bestSolution = new Solution(cities, distanceMatrix, random);
 
-            while (temperature > 1)
+            int countIterations = 0;
+
+            while (currentTemperature > endTemperature && countIterations < limitIterations)
             {
                 Solution newSolution = new Solution(currentSolution.Cities, distanceMatrix, random);
                 newSolution.SwapCities();
@@ -47,7 +50,7 @@ namespace KomivoyazherFireMethod
                 double currentEnergy = currentSolution.Distance;
                 double neighbourEnergy = newSolution.Distance;
 
-                if (AcceptanceProbability(currentEnergy, neighbourEnergy, temperature) > random.NextDouble())
+                if (AcceptanceProbability(currentEnergy, neighbourEnergy, currentTemperature) > random.NextDouble())
                 {
                     currentSolution = newSolution;
                 }
@@ -57,10 +60,12 @@ namespace KomivoyazherFireMethod
                     bestSolution = currentSolution;
                 }
 
-                temperature *= 1 - coolingRate;
+                currentTemperature *= 1 - coolingRate;
+                countIterations++;
             }
 
-            Console.WriteLine("Shortest distance found: " + bestSolution.Distance);
+            Console.WriteLine("Кратчайшая дистанция найдена: " + bestSolution.Distance);
+            Console.WriteLine("Количество итераций: " + countIterations);
             foreach (int city in bestSolution.Cities)
             {
                 Console.WriteLine(city);

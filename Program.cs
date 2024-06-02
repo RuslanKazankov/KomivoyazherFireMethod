@@ -10,10 +10,11 @@
             KomiDataReader komiData = new KomiDataReader("KomiData.txt");
 
             double[,] distanceMatrix = komiData.getDistanceMatrix();
-            double temperature = komiParams.getTemperature();
+            double startTemperature = komiParams.getStartTemperature();
+            double endTemperature = komiParams.getEndTemperature();
             double coolingRate = komiParams.getCoolingRate();
 
-            KomivoyazherClient komi = new KomivoyazherClient(distanceMatrix, temperature, coolingRate);
+            KomivoyazherClient komi = new KomivoyazherClient(distanceMatrix, startTemperature, endTemperature, coolingRate);
             komi.StartAlgorithm();
         }
     }

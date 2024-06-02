@@ -8,7 +8,8 @@ namespace KomivoyazherFireMethod
 {
     public interface IKomiParams
     {
-        double getTemperature();
+        double getStartTemperature();
+        double getEndTemperature();
         double getCoolingRate();
     }
 }

@@ -10,8 +10,8 @@ namespace KomivoyazherFireMethod
     {
         public List<int> Cities { get; set; }
         public double Distance { get; set; }
-        private double[,] distanceMatrix;
 
+        private double[,] distanceMatrix;
         private Random random;
 
         public Solution(List<int> cities, double[,] distanceMatrix, Random random)
@@ -22,7 +22,6 @@ namespace KomivoyazherFireMethod
             Distance = CalculateTotalDistance();
         }
 
-        // Перестановка двух случайных городов
         public void SwapCities()
         {
             int indexA = random.Next(Cities.Count);
@@ -35,7 +34,6 @@ namespace KomivoyazherFireMethod
             Distance = CalculateTotalDistance();
         }
 
-        // Рассчитать общее расстояние
         private double CalculateTotalDistance()
         {
             double totalDistance = 0.0;
