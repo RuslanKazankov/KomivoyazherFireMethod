@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static KomivoyazherFireMethod.CoolingFunctionHelper;
 
 namespace KomivoyazherFireMethod
 {
@@ -12,6 +13,8 @@ namespace KomivoyazherFireMethod
         private double startTemperature;
         private double endTemperature;
         private double coolingRate;
+        private int limitIterations;
+        private Probability? coolingFunction;
 
         public KomiParamsReader(string file) 
         {
@@ -54,6 +57,23 @@ namespace KomivoyazherFireMethod
                         }
                         continue;
                     }
+
+                    if (line.Contains("limitIterations="))
+                    {
+                        if (!int.TryParse(line.Split('=')[1], System.Globalization.CultureInfo.InvariantCulture, out limitIterations))
+                        {
+                            Console.WriteLine(line);
+                            Console.WriteLine(nameof(limitIterations) + ": " + limitIterations);
+                            Console.WriteLine(nameof(limitIterations) + " не прочитан");
+                        }
+                        continue;
+                    }
+
+                    if (line.Contains("coolingFunction="))
+                    {
+                        coolingFunction = CoolingFunctionHelper.GetCoolingFunction(line.Split('=')[1]);
+                        continue;
+                    }
                 }
             }
             catch (Exception e)
@@ -76,6 +96,16 @@ namespace KomivoyazherFireMethod
         public double getEndTemperature()
         {
             return endTemperature;
+        }
+
+        public int getLimitIterations()
+        {
+            return limitIterations;
+        }
+
+        public Probability? getCoolingFunction()
+        {
+            return coolingFunction;
         }
     }
 }

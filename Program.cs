@@ -1,4 +1,7 @@
-﻿namespace KomivoyazherFireMethod
+﻿using System.Diagnostics;
+using System.Drawing;
+
+namespace KomivoyazherFireMethod
 {
     class Program
     {
@@ -7,15 +10,18 @@
         static void Main(string[] args)
         {
             IKomiParams komiParams = new KomiParamsReader("KomiParams.txt");
-            KomiDataReader komiData = new KomiDataReader("KomiData.txt");
+            IKomiData komiData = new KomiDataReader("KomiData.txt");
+            //IKomiData komiData = new KomiDataGenerator(10000, 10, 1000);
 
-            double[,] distanceMatrix = komiData.getDistanceMatrix();
-            double startTemperature = komiParams.getStartTemperature();
-            double endTemperature = komiParams.getEndTemperature();
-            double coolingRate = komiParams.getCoolingRate();
-
-            KomivoyazherClient komi = new KomivoyazherClient(distanceMatrix, startTemperature, endTemperature, coolingRate);
+            KomivoyazherClient komi = new KomivoyazherClient(komiData, komiParams);
             komi.StartAlgorithm();
+
+            List<double> distances = komi.AlgorithmDistances;
+            List<double> temperatures = komi.AlgorithmTemperatures;
+
+            GraphBuilder gBuilder = new GraphBuilder();
+            gBuilder.CreateGraph(distances, "distances.png", "distances", "iterations", "values", Color.Black);
+            gBuilder.CreateGraph(temperatures, "temperatures.png", "temperatures", "iterations", "values", Color.Blue);
         }
     }
 

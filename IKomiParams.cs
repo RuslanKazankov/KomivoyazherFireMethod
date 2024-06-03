@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static KomivoyazherFireMethod.CoolingFunctionHelper;
 
 namespace KomivoyazherFireMethod
 {
@@ -11,5 +12,7 @@ namespace KomivoyazherFireMethod
         double getStartTemperature();
         double getEndTemperature();
         double getCoolingRate();
+        Probability? getCoolingFunction();
+        int getLimitIterations();
     }
 }

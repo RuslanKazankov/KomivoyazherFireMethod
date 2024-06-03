@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KomivoyazherFireMethod
 {
-    public class KomiDataReader
+    public class KomiDataReader : IKomiData
     {
         private List<double[]> distanceMatrix = [];
 
@@ -34,6 +34,10 @@ namespace KomivoyazherFireMethod
             double[] returnArray = new double[strings.Length];
             for (int i = 0; i < strings.Length; i++)
             {
+                if (strings[i] == "")
+                {
+                    continue;
+                }
                 if (!double.TryParse(strings[i], out returnArray[i]))
                 {
                     Console.WriteLine("Не получилось конвертировать distanceMatrix");
@@ -53,6 +57,11 @@ namespace KomivoyazherFireMethod
                 }
             }
             return returnMatrix;
+        }
+
+        public double[,] GetData()
+        {
+            return getDistanceMatrix();
         }
     }
 }
