@@ -12,6 +12,7 @@ namespace KomivoyazherFireMethod
 
         public KomiDataReader(String file)
         {
+            Console.WriteLine("Чтение файла...");
             try
             {
                 using StreamReader sr = new StreamReader(file);
@@ -48,6 +49,7 @@ namespace KomivoyazherFireMethod
         }
         public double[,] getDistanceMatrix()
         {
+            Console.WriteLine("Обработка данных...");
             double[,] returnMatrix = new double[distanceMatrix.Count, distanceMatrix.Count];
             for (int i = 0; i < distanceMatrix.Count; i++)
             {

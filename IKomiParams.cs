@@ -12,7 +12,6 @@ namespace KomivoyazherFireMethod
         double getStartTemperature();
         double getEndTemperature();
         double getCoolingRate();
-        Probability? getCoolingFunction();
         int getLimitIterations();
     }
 }

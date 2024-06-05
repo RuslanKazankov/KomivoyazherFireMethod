@@ -12,7 +12,9 @@ namespace KomivoyazherFireMethod
 {
     public class GraphBuilder
     {
-        public void CreateGraph(List<double> data, string filename, string title, string xAxis, string yAxis, Color color)
+        private Random random = new Random();
+
+        public void CreateGraph(List<List<double>> datas, string filename, string title, string xAxis, string yAxis)
         {
             GraphPane graphPane = new GraphPane();
 
@@ -20,20 +22,34 @@ namespace KomivoyazherFireMethod
             graphPane.XAxis.Title.Text = xAxis;
             graphPane.YAxis.Title.Text = yAxis;
 
-            PointPairList pointPairList = new PointPairList();
+            double min = double.MaxValue;
+            double max = double.MinValue;
 
-            for (int i = 0; i < data.Count; i += 30)
+            int dataI = 2500;
+            foreach (List<double> data in datas)
             {
-                pointPairList.Add(i, data[i]);
+                PointPairList pointPairList = new PointPairList();
+
+                for (int i = 0; i < data.Count; i += 30)
+                {
+                    if (min > data[i])
+                        min = data[i];
+
+                    if (max < data[i])
+                        max = data[i];
+
+                    pointPairList.Add(i, data[i]);
+                }
+                LineItem lineItem = graphPane.AddCurve($"distances", pointPairList, GetRandomColor(), SymbolType.None);
+                dataI += 500;
             }
 
-            LineItem lineItem = graphPane.AddCurve("Sample Line Series", pointPairList, color, SymbolType.Circle);
 
             // Настройка масштаба осей
             graphPane.XAxis.Scale.Min = 0;
-            graphPane.XAxis.Scale.Max = data.Count;
-            graphPane.YAxis.Scale.Min = data.Min();
-            graphPane.YAxis.Scale.Max = data.Max();
+            graphPane.XAxis.Scale.Max = datas[0].Count;
+            graphPane.YAxis.Scale.Min = min;
+            graphPane.YAxis.Scale.Max = max;
 
             graphPane.Rect = new RectangleF(0, 0, 1600, 1200);
 
@@ -64,6 +80,11 @@ namespace KomivoyazherFireMethod
             {
                 Console.WriteLine($"Не удалось открыть файл: {ex.Message}");
             }
+        }
+
+        private Color GetRandomColor()
+        {
+            return Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
         }
     }
 }

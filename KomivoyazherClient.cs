@@ -5,14 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static KomivoyazherFireMethod.CoolingFunctionHelper;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KomivoyazherFireMethod
 {
     public class KomivoyazherClient
     {
+        //Results
         public List<double> AlgorithmDistances { get; } = [];
         public List<double> AlgorithmTemperatures { get; } = [];
-        private Probability CoolingFunction { get; set; }
+        public double AlgorithmTime { get; private set; }
+
+        //Params
+        private Probability CoolingFunction;
 
         private Random random = new Random();
 
@@ -25,9 +30,26 @@ namespace KomivoyazherFireMethod
         private double coolingRate;
         private int limitIterations;
 
+        public KomivoyazherClient(double[,] distanceMatrix, Probability coolingFunction, double coolingRate, double startTemperature = 10000, double endTemperature = 1, int limitIterations = 5000)
+        {
+            this.distanceMatrix = distanceMatrix;
+
+            int citiesCount = (int)Math.Sqrt(distanceMatrix.Length);
+            for (int i = 0; i < citiesCount; i++)
+            {
+                cities.Add(i);
+            }
+
+            this.currentTemperature = startTemperature;
+            this.endTemperature = endTemperature;
+            this.coolingRate = coolingRate;
+            this.limitIterations = limitIterations;
+            this.CoolingFunction = coolingFunction;
+        }
+
         public KomivoyazherClient(IKomiData data, IKomiParams komiParams)
         {
-            this.distanceMatrix = data.GetData();
+            distanceMatrix = data.GetData();
 
             int citiesCount = (int)Math.Sqrt(distanceMatrix.Length);
             for (int i = 0; i < citiesCount; i++)
@@ -39,11 +61,11 @@ namespace KomivoyazherFireMethod
             endTemperature = komiParams.getEndTemperature();
             coolingRate = komiParams.getCoolingRate();
             limitIterations = komiParams.getLimitIterations();
-            CoolingFunction = komiParams.getCoolingFunction() ?? ExponentialCooling;
+            CoolingFunction = ExponentialCooling;
         }
         public KomivoyazherClient(IKomiData data, IKomiParams komiParams, Probability coolingFunction)
         {
-            this.distanceMatrix = data.GetData();
+            distanceMatrix = data.GetData();
 
             int citiesCount = (int)Math.Sqrt(distanceMatrix.Length);
             for (int i = 0; i < citiesCount; i++)
@@ -60,6 +82,7 @@ namespace KomivoyazherFireMethod
 
         public void StartAlgorithm()
         {
+            Console.WriteLine("Алгоритм запущен...");
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
@@ -90,18 +113,20 @@ namespace KomivoyazherFireMethod
                 AlgorithmTemperatures.Add(currentTemperature);
 
                 currentTemperature = CoolingFunction(currentTemperature, coolingRate);
+
                 countIterations++;
             }
 
-            //foreach (int city in bestSolution.Cities)
-            //{
-            //    Console.WriteLine(city);
-            //}
+            foreach (int city in bestSolution.Cities)
+            {
+                Console.WriteLine(city);
+            }
             Console.WriteLine("Кратчайшая дистанция найдена: " + bestSolution.Distance);
             Console.WriteLine("Количество итераций: " + countIterations);
 
             stopwatch.Stop();
-            Console.WriteLine("Время выполнения(с): " + stopwatch.Elapsed.TotalSeconds);
+            AlgorithmTime = stopwatch.Elapsed.TotalSeconds;
+            Console.WriteLine("Время выполнения(с): " + AlgorithmTime);
         }
 
         private static double AcceptanceProbability(double currentEnergy, double neighbourEnergy, double temperature)
