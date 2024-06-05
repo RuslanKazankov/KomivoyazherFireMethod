@@ -12,17 +12,8 @@
 ### Примеры
 #### Экспоненциальное охлаждение
 ```
-startTemperature=10000
+startTemperature=2500
 endTemperature=1
-coolingRate=0.003
-limitIterations=5000
-coolingFunction=ExponentialCooling
-```
-#### Геометрическое охлаждение
-```
-startTemperature=10000
-endTemperature=1
-coolingRate=0.9986
-limitIterations=5000
-coolingFunction=GeometricCooling
+coolingRate=0.0005
+limitIterations=10000
 ```
